@@ -25,7 +25,13 @@ app.use(cors({
   origin: ["http://localhost:3000", "https://joyful-froyo-69e8c4.netlify.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
-  allowedHeaders: ["Content-Type"],
+  allowedHeaders: [
+    'Origin',
+    'X-Requested-With',
+    'Content-Type',
+    'Accept',
+    'Authorization'
+],
 
 }));
 
