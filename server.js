@@ -17,7 +17,7 @@ const server = http.createServer(app);
 
 
 app.use(cors({
-  origin: ["http://localhost:3000", "https://joyful-froyo-69e8c4.netlify.app/" ],
+  origin: ["http://localhost:3000", "https://joyful-froyo-69e8c4.netlify.app" ],
 methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true, 
 }));
