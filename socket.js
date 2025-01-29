@@ -1,8 +1,8 @@
-// filepath: /C:/Users/User/Desktop/Chat_app/server/socket.js
+
 import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
 import User from "./models/User.js";
-import Chat from "./models/Chat.js"; // Ensure Chat model is imported
+import Chat from "./models/Chat.js"; 
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -10,7 +10,7 @@ dotenv.config();
 export const initializeSocket = (server) => { 
     const io = new Server(server, {
         cors: {
-            origin: "http://localhost:3000", // Adjust as needed
+            origin: ["http://localhost:3000",  "https://joyful-froyo-69e8c4.netlify.app"],
             methods: ["GET", "POST"],
             credentials: true,
         },
@@ -44,13 +44,13 @@ export const initializeSocket = (server) => {
             socket.user = user;
             console.log('User connected:', user.username);
 
-            // Handle 'joinRoom' event
+
             socket.on("joinRoom", async (roomId) => {
                 socket.join(roomId);
                 console.log(`User ${user.username} joined room: ${roomId}`);
             });
 
-            // Handle 'sendMessage' event
+
             socket.on("sendMessage", async (message) => {
                 const {text,sender,roomId} = message;
                 const chat = await Chat.create({
