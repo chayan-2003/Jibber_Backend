@@ -86,10 +86,8 @@ const login = asyncHandler(async (req, res) => {
     // Set the cookie with additional options
     res.cookie('token', token, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Set to true in production
-        sameSite: 'lax', // Options: 'lax', 'strict', 'none'
-        maxAge: 30 * 24 * 60 * 60 * 1000, // 30 days in milliseconds
-        path: '/', // Cookie is accessible throughout the site
+        secure: process.env.NODE_ENV === 'production', 
+        sameSite: process.env.NODE_ENV === 'production' ? 'None' : 'Lax',
     });
 
     // Respond with user data and token
