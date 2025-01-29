@@ -38,7 +38,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-app.options('*', cors(corsOptions));
+
 app.get("/", (req, res) => {
   res.json({
     project: "MERN Chat App using Socket.IO",
