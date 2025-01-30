@@ -59,9 +59,16 @@ export const initializeSocket = (server) => {
             });
             socket.on("typing", ({ sender, roomId }) => {
                 // Broadcast to all other users in the room that this user is typing
-                io.to(roomId).emit("userTyping",sender); 
+                typingUsers.add(sender);
+                io.to(roomId).emit("userTyping", Array.from(typingUsers)); 
                 console.log(`User ${sender} is typing in room ${roomId}`);
             });
+            socket.on("stopTyping", ({ sender, roomId }) => {
+                typingUsers.delete(sender);
+                io.to(roomId).emit("userTyping", Array.from(typingUsers));
+                console.log(`User ${sender} stopped typing in room ${roomId}`);
+            });
+            
 
 
 
