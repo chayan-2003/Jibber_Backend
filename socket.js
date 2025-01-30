@@ -4,10 +4,13 @@ import jwt from "jsonwebtoken";
 import User from "./models/User.js";
 import Chat from "./models/Chat.js"; 
 import dotenv from "dotenv";
+import { set } from "mongoose";
 
 dotenv.config();
 
 export const initializeSocket = (server) => { 
+    const onlineUsers = new Set();
+    const typingUsers = new Set();
     const io = new Server(server, {
         cors: {
             origin: ["http://localhost:3000",  "https://joyful-froyo-69e8c4.netlify.app"],
@@ -42,13 +45,24 @@ export const initializeSocket = (server) => {
             }
 
             socket.user = user;
-            console.log('User connected:', user.username);
+          //  console.log('User connected:', user.username);
 
 
             socket.on("joinRoom", async (roomId) => {
                 socket.join(roomId);
                 console.log(`User ${user.username} joined room: ${roomId}`);
+                onlineUsers.add(user.id);
+                io.to(roomId).emit("onlineUsers", Array.from(onlineUsers));
+                console.log('Online users:', Array.from(onlineUsers));
+
+                 
             });
+            socket.on("typing", ({ sender, roomId }) => {
+                // Broadcast to all other users in the room that this user is typing
+                io.to(roomId).emit("userTyping",sender); 
+                console.log(`User ${sender} is typing in room ${roomId}`);
+            });
+
 
 
             socket.on("sendMessage", async (message) => {
