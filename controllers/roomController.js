@@ -9,7 +9,7 @@ const createRoom = asyncHandler(async (req, res) => {
         throw new Error('Please provide both name and description for the group');
     }
 
-    // Check if group with the same name already exists
+ 
     const groupExists = await Room.findOne({ name });
 
     if (groupExists) {
@@ -20,7 +20,7 @@ const createRoom = asyncHandler(async (req, res) => {
     const group = await Room.create({
         name,
         description,
-        members: [req.user._id], // Automatically add the creator as a member
+        members: [req.user._id], 
     });
 
     if (group) {
@@ -53,7 +53,7 @@ const joinRoom = asyncHandler(async (req, res) => {
         throw new Error('Group not found');
     }
 
-    // Check if user is already a member
+   
     if (group.members.includes(userId)) {
         res.status(400);
         throw new Error('You are already a member of this group');
@@ -86,7 +86,7 @@ const leaveRoom = asyncHandler(async (req, res) => {
         throw new Error('You are not a member of this group');
     }
 
-    // Remove user from members
+    
     group.members = group.members.filter(member => member.toString() !== userId.toString());
     await group.save();
 

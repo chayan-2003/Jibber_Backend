@@ -45,7 +45,7 @@ export const initializeSocket = (server) => {
             }
 
             socket.user = user;
-          //  console.log('User connected:', user.username);
+      
 
 
             socket.on("joinRoom", async (roomId) => {
@@ -58,7 +58,7 @@ export const initializeSocket = (server) => {
                  
             });
             socket.on("typing", ({ sender, roomId }) => {
-                // Broadcast to all other users in the room that this user is typing
+              
                 typingUsers.add(sender);
                 io.to(roomId).emit("userTyping", Array.from(typingUsers)); 
                 console.log(`User ${sender} is typing in room ${roomId}`);
