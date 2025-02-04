@@ -2,6 +2,7 @@ import express from 'express';
 import Chat from '../models/Chat.js';
 import Redis from 'ioredis';
 
+<<<<<<< HEAD
 const redisClient = new Redis(
     {
         host: '',
@@ -9,6 +10,9 @@ const redisClient = new Redis(
         password: process.env.REDIS_PASSWORD,
     }
 );
+=======
+const redisClient = new Redis();
+>>>>>>> 5ce6d6305bca03502879eb2c6adf82dbe751bf1b
 const DEFAULT_EXPIRATION = 3600;
 export const createChat = async (req, res) => {
     const { room, message } = req.body;
