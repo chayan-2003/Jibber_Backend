@@ -1,19 +1,6 @@
 import express from 'express';
 import Chat from '../models/Chat.js';
-import Redis from 'ioredis';
 
-<<<<<<< HEAD
-const redisClient = new Redis(
-    {
-        host: '',
-        port: process.env.REDIS_PORT,
-        password: process.env.REDIS_PASSWORD,
-    }
-);
-=======
-const redisClient = new Redis();
->>>>>>> 5ce6d6305bca03502879eb2c6adf82dbe751bf1b
-const DEFAULT_EXPIRATION = 3600;
 export const createChat = async (req, res) => {
     const { room, message } = req.body;
     try {
@@ -30,30 +17,10 @@ export const createChat = async (req, res) => {
 }
 //get message for a group 
 export const getChat = async (req, res) => {
-    redisClient.get(`chat:${req.params.roomId}`, async (err, data) => {
-        if (err) {
-            console.error("Error fetching from Redis:", err);
-            res.status(500).json({ message: "Internal Server Error" });
-            return;
-        }
-        if(data){
-            res.status(200).json(JSON.parse(data));
-            console.log("cache hit");
-        }
-        else
-        {
-            console.log("cache miss");
-            try {
-                const chat = await Chat.find({ room: req.params.roomId }).populate('user', 'username').sort({ createdAt: 1 });
-                redisClient.setex(`chat:${req.params.roomId}`, DEFAULT_EXPIRATION, JSON.stringify(chat), (err) => {
-                    if (err) {
-                        console.error("Error setting Redis key:", err);
-                    }
-                });
-                res.status(200).json(chat);
-            } catch (error) {
-                res.status(500).json({ error: error.message });
-            }
-        }
-    });
+    try {
+        const chat = await Chat.find({ room: req.params.roomId }).populate('user', 'username').sort({ createdAt: 1 });
+        res.status(200).json(chat);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
 }
