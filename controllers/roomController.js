@@ -1,6 +1,9 @@
 import asyncHandler from 'express-async-handler';
 import Room from '../models/Room.js';
+import Redis from 'ioredis';
 
+const redisClient = new Redis();
+const DEFAULT_EXPIRATION = 3600;
 const createRoom = asyncHandler(async (req, res) => {
     const { name, description } = req.body;
 
@@ -37,9 +40,32 @@ const createRoom = asyncHandler(async (req, res) => {
 });
 
 const getAllRooms = asyncHandler(async (req, res) => {
-    const groups = await Room.find().populate('members', 'username email');
+    redisClient.get("rooms", async (err, data) => {
+        if (err) {
+            console.error("Error fetching from Redis:", err);
+            res.status(500).json({ message: "Internal Server Error" });
+            return;
+        }
 
-    res.status(200).json(groups);
+        if (data) {
+            res.status(200).json(JSON.parse(data));
+            console.log("cache hit");
+        } else {
+            console.log("cache miss");
+            try {
+                const groups = await Room.find().populate('members', 'username email');
+                redisClient.setex("rooms", DEFAULT_EXPIRATION, JSON.stringify(groups), (err) => {
+                    if (err) {
+                        console.error("Error setting Redis key:", err);
+                    }
+                });
+                res.status(200).json(groups);
+            } catch (error) {
+                console.error("Error fetching from database:", error);
+                res.status(500).json({ message: "Internal Server Error" });
+            }
+        }
+    });
 });
 
 const joinRoom = asyncHandler(async (req, res) => {
