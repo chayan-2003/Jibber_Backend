@@ -5,7 +5,6 @@ import User from "./models/User.js";
 import Chat from "./models/Chat.js"; 
 import dotenv from "dotenv";
 import { set } from "mongoose";
-import { json } from "express";
 
 dotenv.config();
 
@@ -78,16 +77,15 @@ export const initializeSocket = (server) => {
                 const chat = await Chat.create({
                     room:roomId,
                     user: decoded.id,
-                    message: text,
-      
+                    message: text
                 });
                 
                 const populatedChat = await Chat.findById(chat._id).populate("user", "username email");
                
                 console.log('Message saved to database:', chat);
-                
-                io.to(roomId).emit("newMessage", {sender,text});
-                
+
+                io.to(roomId).emit("newMessage", {sender,text}
+                );
                             
             });
         }).catch(err => {
