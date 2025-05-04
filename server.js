@@ -22,7 +22,7 @@ mongoose
 
 initializeSocket(server);
 app.use(cors({
-  origin: ["http://localhost:3000", "https://jibberfrontend.vercel.app"],
+  origin: ["http://localhost:3000", "https://jibberfrontend.vercel.app","https://jibber-o8lu.vercel.app"],
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
   allowedHeaders: [
